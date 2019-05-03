@@ -1,0 +1,2 @@
+recursive-include dfimspect/static *.*
+include df-imspect-widget.json
