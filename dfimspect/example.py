@@ -57,6 +57,11 @@ class ImBoxWidget(widgets.DOMWidget):
                            imbox2json(imbox),
                            from_json=lambda json, widget:
                            json2imbox(json))
+    hover_box = Any().tag(sync=True,
+                          to_json=lambda imbox, widget:
+                          imbox2json(imbox),
+                          from_json=lambda json, widget:
+                          json2imbox(json))
 
     @observe('img')
     def _observe_img(self, new):

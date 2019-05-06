@@ -52,6 +52,7 @@ var ImBoxView = widgets.DOMWidgetView.extend({
     this.model.on('change:width', this.draw_img, this);
     this.model.on('change:height', this.draw_img, this);
     this.model.on('change:active_box', this.draw_boxes, this);
+    this.model.on('change:hover_box', this.draw_boxes, this);
     this.model.on('change:default_style', this.draw_boxes, this);
   },
 
@@ -95,10 +96,16 @@ var ImBoxView = widgets.DOMWidgetView.extend({
 
     var active_box = this.model.get('active_box');
     var is_active = JSON.stringify(active_box) === JSON.stringify(box);
+    var hover_box = JSON.parse(JSON.stringify(this.model.get('hover_box')));
+    var is_hover = JSON.stringify(hover_box) === JSON.stringify(box);
     if (is_active) {
       box = JSON.parse(JSON.stringify(box));
       box['style']['fill_style'] = box['style']['active_fill'];
       box['style']['stroke_style'] = box['style']['active_stroke'];
+    } else if (is_hover) {
+      box = JSON.parse(JSON.stringify(box));
+      box['style']['fill_style'] = box['style']['hover_fill'];
+      box['style']['stroke_style'] = box['style']['hover_stroke'];
     }
 
     ctx.beginPath();
@@ -142,25 +149,29 @@ var ImBoxView = widgets.DOMWidgetView.extend({
       x = e.clientX - rect.left,
       y = e.clientY - rect.top;
 
-    var active_box = this.model.get('active_box');
+    var hover_box = JSON.parse(JSON.stringify(this.model.get('hover_box')));
     var ctx = this.fg.getContext("2d");
-    ctx.clearRect(0, 0, this.fg.width, this.fg.height);
-    this.model.get('boxes').forEach(function(box) {
-      var is_active = JSON.stringify(active_box) === JSON.stringify(box);
-      if (is_active) {
-        this.draw_box(box);
-        return;
-      }
+    var hover_boxes = this.model.get('boxes').filter(function(box) {
       this.draw_dummy_box(box);
       if (ctx.isPointInPath(x, y)) {
-        var boxClone = JSON.parse(JSON.stringify(box));
-        boxClone['style']['fill_style'] = boxClone['style']['hover_fill'];
-        boxClone['style']['stroke_style'] = boxClone['style']['hover_stroke'];
-        this.draw_box(boxClone);
-      } else {
-        this.draw_box(box);
+        return true;
       }
+      return false;
     }.bind(this));
+    if (hover_boxes.length > 1) {
+      // var centers = hover_boxes.map(b => [b['box'].x + (b['box'].width/2),
+      //                                     b['box'].y + (b['box'].height/2)]);
+      var cent_dists = hover_boxes.map(b => Math.sqrt(Math.pow(b['box'].x - x, 2) +
+                                                      Math.pow(b['box'].y - y, 2)));
+      var idx = cent_dists.indexOf(Math.min.apply(null, cent_dists));
+      hover_box = hover_boxes[idx];
+    } else if (hover_boxes.length === 1) {
+      hover_box = hover_boxes[0];
+    } else {
+      hover_box = null;
+    }
+    this.model.set('hover_box', hover_box);
+    this.touch();
   },
 
   onclick: function(e) {
@@ -170,18 +181,21 @@ var ImBoxView = widgets.DOMWidgetView.extend({
       y = e.clientY - rect.top;
 
     var active_box = JSON.parse(JSON.stringify(this.model.get('active_box')));
+    var hover_box = JSON.parse(JSON.stringify(this.model.get('hover_box')));
     var ctx = this.fg.getContext("2d");
     var any_clicked = this.model.get('boxes').some(function(box) {
       this.draw_dummy_box(box);
       var is_clicked = ctx.isPointInPath(x, y);
       var is_active = JSON.stringify(active_box) === JSON.stringify(box);
-      if (is_clicked && !is_active) {
+      var is_hover = JSON.stringify(hover_box) === JSON.stringify(box);
+
+      if (is_clicked && !is_active && is_hover) {
         active_box = box;
       }
-      else if (is_clicked && is_active) {
+      else if (is_clicked && is_active && is_hover) {
         active_box = null;
       }
-      return is_clicked;
+      return is_clicked && is_hover;
     }.bind(this));
     if (! any_clicked) {
       active_box = null;
