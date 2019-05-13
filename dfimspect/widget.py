@@ -22,7 +22,7 @@ class ImBox(VBox):
 
         self.idx_wgt = BoundedIntText(value=None,
                                       min=0,
-                                      max=len(self.df_img),
+                                      max=len(self.df_img) - 1,
                                       step=1,
                                       description='Index',
                                       disabled=False)
