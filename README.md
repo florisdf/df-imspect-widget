@@ -14,7 +14,7 @@ To install use pip:
 
 For a development installation (requires npm),
 
-    $ git clone https://github.com/floridf/df-imspect-widget.git
+    $ git clone https://github.com/florisdf/df-imspect-widget.git
     $ cd df-imspect-widget
     $ pip install -e .
     $ jupyter nbextension install --py --symlink --sys-prefix dfimspect
