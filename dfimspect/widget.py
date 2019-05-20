@@ -8,12 +8,16 @@ class ImBox(VBox):
     def __init__(self, df: pd.DataFrame, box_col='box', img_col='image',
                  style_col=None):
         df2 = df.copy()
+
         df2['box_dict'] = df.apply(lambda row: dict(index=row.name,
-                                                    box=row[box_col],
+                                                    box=row[box_col]
+                                                    if box_col is not None
+                                                    else None,
                                                     style=row[style_col]
                                                     if style_col is not None
                                                     else {}),
                                    axis=1)
+
         self.df_img = df2.groupby(img_col).agg(list).reset_index()
 
         self.imbox_wgt = ImBoxWidget()
