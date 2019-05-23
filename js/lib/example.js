@@ -46,19 +46,31 @@ var ImBoxView = widgets.DOMWidgetView.extend({
     this.el.appendChild(div);
 
     this.im_scale = 1;
-    this.draw_img();
-    this.model.on('change:img', this.draw_img, this);
-    this.model.on('change:boxes', this.draw_boxes, this);
-    this.model.on('change:width', this.draw_img, this);
-    this.model.on('change:height', this.draw_img, this);
-    this.model.on('change:active_box', this.draw_boxes, this);
-    this.model.on('change:hover_box', this.draw_boxes, this);
-    this.model.on('change:default_style', this.draw_boxes, this);
+    this.draw_bg();
+    this.bg.getContext("2d");
+    this.model.on('change:img', this.draw_bg, this);
+    this.model.on('change:boxes', this.draw_fg, this);
+    this.model.on('change:width', this.draw_bg, this);
+    this.model.on('change:height', this.draw_bg, this);
+    this.model.on('change:active_box', this.draw_fg, this);
+    this.model.on('change:hover_box', this.draw_fg, this);
+    this.model.on('change:default_style', this.draw_fg, this);
+    this.model.on('change:save_img', this.save_img, this);
   },
 
-  draw_img: function() {
-    var ctx = this.bg.getContext("2d");
-    ctx.clearRect(0, 0, this.bg.width, this.bg.height);
+  draw_bg: function() {
+    this.draw_img(this.bg);
+  },
+
+  draw_fg: function() {
+    this.fg.width = this.bg.width;
+    this.fg.height = this.bg.height;
+    this.draw_boxes(this.fg);
+  },
+
+  draw_img: function(canvas) {
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     var img = new Image();
     img.src = this.model.get('img');
@@ -71,19 +83,36 @@ var ImBoxView = widgets.DOMWidgetView.extend({
       let width = img.width*this.im_scale;
       let height = img.height*this.im_scale;
 
-      this.bg.width = width;
-      this.bg.height = height;
-      this.fg.width = width;
-      this.fg.height = height;
+      canvas.width = width;
+      canvas.height = height;
 
       ctx.drawImage(img, 0, 0, width, height);
-      this.draw_boxes();
+      this.draw_fg();
     }.bind(this);
     img.addEventListener('load' , onImgLoad);
   },
 
-  draw_box: function(box) {
-    var ctx = this.fg.getContext("2d");
+  save_img: function() {
+    if (this.model.get('save_img')) {
+      console.log('Save image!');
+      var canvas = document.createElement('canvas');
+      draw_img(canvas);
+      var boxes = this.model.get('boxes');
+      boxes.forEach(function(box) {
+        if (box) {
+          this.draw_box(box, canvas);
+        }
+      }.bind(this));
+      window.location = canvas.toDataURL('image/png');
+
+      // Reset 
+      this.model.set('save_img', false);
+      this.touch();
+    }
+  },
+
+  draw_box: function(box, canvas) {
+    var ctx = canvas.getContext("2d");
     var im_scale = this.im_scale;
 
     var default_style = this.model.get('default_style');
@@ -120,9 +149,9 @@ var ImBoxView = widgets.DOMWidgetView.extend({
     ctx.fill();
   },
 
-  draw_dummy_box: function(box) {
+  draw_dummy_box: function(box, canvas) {
     var im_scale = this.im_scale;
-    var ctx = this.fg.getContext("2d");
+    var ctx = canvas.getContext("2d");
     ctx.beginPath();
     ctx.lineWidth = 0;
     ctx.rect(box['box']['x']*im_scale,
@@ -131,14 +160,14 @@ var ImBoxView = widgets.DOMWidgetView.extend({
       box['box']['height']*im_scale);
   },
 
-  draw_boxes: function() {
-    var ctx = this.fg.getContext("2d");
-    ctx.clearRect(0, 0, this.fg.width, this.fg.height);
+  draw_boxes: function(canvas) {
+    var ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     var boxes = this.model.get('boxes');
     boxes.forEach(function(box) {
       if (box) {
-        this.draw_box(box);
+        this.draw_box(box, canvas);
       }
     }.bind(this));
   },
@@ -152,7 +181,7 @@ var ImBoxView = widgets.DOMWidgetView.extend({
     var hover_box = JSON.parse(JSON.stringify(this.model.get('hover_box')));
     var ctx = this.fg.getContext("2d");
     var hover_boxes = this.model.get('boxes').filter(function(box) {
-      this.draw_dummy_box(box);
+      this.draw_dummy_box(box, this.fg);
       if (ctx.isPointInPath(x, y)) {
         return true;
       }
@@ -184,7 +213,7 @@ var ImBoxView = widgets.DOMWidgetView.extend({
     var hover_box = JSON.parse(JSON.stringify(this.model.get('hover_box')));
     var ctx = this.fg.getContext("2d");
     var any_clicked = this.model.get('boxes').some(function(box) {
-      this.draw_dummy_box(box);
+      this.draw_dummy_box(box, this.fg);
       var is_clicked = ctx.isPointInPath(x, y);
       var is_active = JSON.stringify(active_box) === JSON.stringify(box);
       var is_hover = JSON.stringify(hover_box) === JSON.stringify(box);

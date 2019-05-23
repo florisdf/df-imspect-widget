@@ -1,4 +1,4 @@
-from traitlets import Unicode, List, Int, observe, Dict, Any
+from traitlets import Unicode, List, Int, observe, Dict, Any, Bool
 import ipywidgets as widgets
 from flutil.shape import Box
 
@@ -62,6 +62,8 @@ class ImBoxWidget(widgets.DOMWidget):
                           imbox2json(imbox),
                           from_json=lambda json, widget:
                           json2imbox(json))
+
+    save_img = Bool(False).tag(sync=True)
 
     @observe('img')
     def _observe_img(self, new):
