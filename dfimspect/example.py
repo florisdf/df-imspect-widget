@@ -6,7 +6,7 @@ from flutil.shape import Box
 def box2json(box):
     return ({'x': box.x_min, 'y': box.y_min,
              'width': box.width, 'height': box.height}
-            if box is not None else None)
+            if isinstance(box, Box) else None)
 
 
 def json2box(json):
