@@ -160,9 +160,9 @@ var ImBoxView = widgets.DOMWidgetView.extend({
     var hover_boxes = this.model.get('boxes').filter(function(box) {
       if (box) {
         this.draw_dummy_box(box);
-      }
-      if (ctx.isPointInPath(x, y)) {
-        return true;
+        if (ctx.isPointInPath(x, y)) {
+          return true;
+        }
       }
       return false;
     }.bind(this));

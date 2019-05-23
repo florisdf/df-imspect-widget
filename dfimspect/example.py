@@ -27,7 +27,8 @@ def json2imbox(json):
     return ({'index': json['index'],
              'box': json2box(json['box']),
              'style': json['style'] if 'style' in json else {}}
-            if json is not None else None)
+            if json is not None and json['box'] is not None
+            else None)
 
 
 @widgets.register
