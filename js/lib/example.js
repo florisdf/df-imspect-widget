@@ -83,6 +83,9 @@ var ImBoxView = widgets.DOMWidgetView.extend({
   },
 
   draw_box: function(box) {
+    if (!box) {
+      return;
+    }
     var ctx = this.fg.getContext("2d");
     var im_scale = this.im_scale;
 
@@ -121,6 +124,9 @@ var ImBoxView = widgets.DOMWidgetView.extend({
   },
 
   draw_dummy_box: function(box) {
+    if (!box) {
+      return;
+    }
     var im_scale = this.im_scale;
     var ctx = this.fg.getContext("2d");
     ctx.beginPath();
@@ -152,7 +158,9 @@ var ImBoxView = widgets.DOMWidgetView.extend({
     var hover_box = JSON.parse(JSON.stringify(this.model.get('hover_box')));
     var ctx = this.fg.getContext("2d");
     var hover_boxes = this.model.get('boxes').filter(function(box) {
-      this.draw_dummy_box(box);
+      if (box) {
+        this.draw_dummy_box(box);
+      }
       if (ctx.isPointInPath(x, y)) {
         return true;
       }
