@@ -10,12 +10,13 @@ class ImBox(VBox):
         df2 = df.copy()
 
         df2['box_dict'] = df.apply(lambda row: dict(index=row.name,
-                                                    box=row[box_col]
-                                                    if box_col is not None
-                                                    else None,
+                                                    box=row[box_col],
                                                     style=row[style_col]
                                                     if style_col is not None
-                                                    else {}),
+                                                    else {})
+                                   if (box_col in row.index
+                                       and row[box_col] is not None)
+                                   else None,
                                    axis=1)
 
         self.df_img = df2.groupby(img_col).agg(list).reset_index()

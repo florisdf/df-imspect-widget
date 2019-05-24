@@ -48,9 +48,9 @@ class ImBoxWidget(widgets.DOMWidget):
                           'hover_stroke': 'blue',
                           'active_fill': '#ffffff22',
                           'active_stroke': 'green'}).tag(sync=True)
-    boxes = List().tag(sync=True,
-                       to_json=lambda imboxes, widget:
-                       [imbox2json(imbox) for imbox in imboxes])
+    boxes = List([]).tag(sync=True,
+                         to_json=lambda imboxes, widget:
+                         [imbox2json(imbox) for imbox in imboxes])
     width = Int(500).tag(sync=True)
     height = Int(500).tag(sync=True)
     active_box = Any().tag(sync=True,
