@@ -40,7 +40,7 @@ class ImBoxWidget(widgets.DOMWidget):
     _view_module_version = Unicode('^0.1.0').tag(sync=True)
     _model_module_version = Unicode('^0.1.0').tag(sync=True)
 
-    img = Unicode().tag(sync=True)
+    img = Any().tag(sync=True, to_json=lambda p, widget: str(p))
     default_style = Dict({'stroke_width': 2,
                           'stroke_style': 'red',
                           'fill_style': '#00000000',
@@ -79,7 +79,7 @@ class CropBoxWidget(widgets.DOMWidget):
     _view_module_version = Unicode('^0.1.0').tag(sync=True)
     _model_module_version = Unicode('^0.1.0').tag(sync=True)
 
-    img = Unicode().tag(sync=True)
+    img = Any().tag(sync=True, to_json=lambda p, widget: str(p))
     box = Any().tag(sync=True,
                     to_json=lambda box, widget: box2json(box),
                     from_json=lambda json, widget: json2box(json))
