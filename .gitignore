@@ -4,6 +4,8 @@ dist/
 build/
 *.py[cod]
 node_modules/
+js/package-lock.json
+js/npm-debug.log
 
 # OS X
 .DS_Store
