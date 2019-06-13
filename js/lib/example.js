@@ -120,6 +120,13 @@ var ImBoxView = widgets.DOMWidgetView.extend({
       box['box']['width']*im_scale,
       box['box']['height']*im_scale);
     ctx.stroke();
+    ctx.font = box['style']['font'];
+    console.log('The box text');
+    console.log(box['text']);
+    ctx.fillText(box['text'],
+                 box['box']['x']*im_scale,
+                 box['box']['y']*im_scale,
+                 box['box']['width']*2); // Max width
     ctx.fill();
   },
 

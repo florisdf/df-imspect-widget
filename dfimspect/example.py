@@ -19,6 +19,7 @@ def json2box(json):
 def imbox2json(imbox):
     return ({'index': imbox['index'],
              'box': box2json(imbox['box']),
+             'text': imbox['text'],
              'style': imbox['style'] if 'style' in imbox else {}}
             if imbox is not None else None)
 
@@ -26,6 +27,7 @@ def imbox2json(imbox):
 def json2imbox(json):
     return ({'index': json['index'],
              'box': json2box(json['box']),
+             'text': json['text'],
              'style': json['style'] if 'style' in json else {}}
             if json is not None and json['box'] is not None
             else None)
@@ -47,7 +49,8 @@ class ImBoxWidget(widgets.DOMWidget):
                           'hover_fill': '#00000088',
                           'hover_stroke': 'blue',
                           'active_fill': '#ffffff22',
-                          'active_stroke': 'green'}).tag(sync=True)
+                          'active_stroke': 'green',
+                          'font': '10px sans-serif'}).tag(sync=True)
     boxes = List([]).tag(sync=True,
                          to_json=lambda imboxes, widget:
                          [imbox2json(imbox) for imbox in imboxes])
