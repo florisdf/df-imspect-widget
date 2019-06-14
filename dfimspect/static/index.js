@@ -199,6 +199,14 @@ var ImBoxView = widgets.DOMWidgetView.extend({
       box['box']['height']*im_scale);
     ctx.stroke();
     ctx.fill();
+
+    ctx.font = box['style']['font'];
+    // Font color same as box stroke
+    ctx.fillStyle = box['style']['stroke_style']; 
+    ctx.fillText(box['text'],
+                 box['box']['x']*im_scale,
+                 box['box']['y']*im_scale - 2,
+                 box['box']['width']*2); // Max width
   },
 
   draw_dummy_box: function(box) {

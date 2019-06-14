@@ -50,7 +50,7 @@ class ImBoxWidget(widgets.DOMWidget):
                           'hover_stroke': 'blue',
                           'active_fill': '#ffffff22',
                           'active_stroke': 'green',
-                          'font': '10px sans-serif'}).tag(sync=True)
+                          'font': '.75em sans-serif'}).tag(sync=True)
     boxes = List([]).tag(sync=True,
                          to_json=lambda imboxes, widget:
                          [imbox2json(imbox) for imbox in imboxes])
