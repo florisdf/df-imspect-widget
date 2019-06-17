@@ -103,18 +103,18 @@ var ImBoxView = widgets.DOMWidgetView.extend({
     var is_hover = JSON.stringify(hover_box) === JSON.stringify(box);
     if (is_active) {
       box = JSON.parse(JSON.stringify(box));
-      box['style']['fill_style'] = box['style']['active_fill'];
-      box['style']['stroke_style'] = box['style']['active_stroke'];
+      box['style']['fill_color'] = box['style']['active_fill'];
+      box['style']['stroke_color'] = box['style']['active_stroke'];
     } else if (is_hover) {
       box = JSON.parse(JSON.stringify(box));
-      box['style']['fill_style'] = box['style']['hover_fill'];
-      box['style']['stroke_style'] = box['style']['hover_stroke'];
+      box['style']['fill_color'] = box['style']['hover_fill'];
+      box['style']['stroke_color'] = box['style']['hover_stroke'];
     }
 
     ctx.beginPath();
     ctx.lineWidth = box['style']['stroke_width'];
-    ctx.strokeStyle = box['style']['stroke_style'];
-    ctx.fillStyle = box['style']['fill_style'];
+    ctx.strokeStyle = box['style']['stroke_color'];
+    ctx.fillStyle = box['style']['fill_color'];
     ctx.rect(box['box']['x']*im_scale,
       box['box']['y']*im_scale,
       box['box']['width']*im_scale,
@@ -122,13 +122,17 @@ var ImBoxView = widgets.DOMWidgetView.extend({
     ctx.stroke();
     ctx.fill();
 
-    ctx.font = box['style']['font'];
-    // Font color same as box stroke
-    ctx.fillStyle = box['style']['stroke_style']; 
-    ctx.fillText(box['text'],
-                 box['box']['x']*im_scale,
-                 box['box']['y']*im_scale - 2,
-                 box['box']['width']*2); // Max width
+    if(box['text']) {
+      var fontfam = box['style']['font_family'];
+      var fontsize = box['style']['font_size'];
+      ctx.font = fontsize + 'pt ' + fontfam;
+      // Font color same as box stroke
+      ctx.fillStyle = box['style']['stroke_color']; 
+      ctx.fillText(box['text'],
+                  box['box']['x']*im_scale,
+                  box['box']['y']*im_scale - 2,
+                  box['box']['width']*2); // Max width
+    }
   },
 
   draw_dummy_box: function(box) {
