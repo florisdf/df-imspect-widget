@@ -7,19 +7,18 @@ from .example import ImBoxWidget, CropBoxWidget, DetailsWidget
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 import logging
-from flutil.color import Color
 from skvideo.io import FFmpegWriter
 import numpy as np
 from tqdm import tqdm_notebook as tqdm
 
 DEFAULT_STYLE = {
     'stroke_width': 2,
-    'stroke_color': Color('red').hex,
+    'stroke_color': '#ff0000',
     'fill_color': '#00000000',
     'hover_fill': '#00000088',
-    'hover_stroke': Color('blue').hex,
+    'hover_stroke': '#0000ff',
     'active_fill': '#ffffff22',
-    'active_stroke': Color('green').hex,
+    'active_stroke': '#00ff00',
     'font_family': 'arial',
     'font_size': 10
 }
