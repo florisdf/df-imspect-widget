@@ -143,6 +143,7 @@ setup_args = {
         'pandas',
         'matplotlib',
         'Pillow',
+        'scikit-video',
         'flutil',
     ],
     'packages': find_packages(),
