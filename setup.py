@@ -142,6 +142,7 @@ setup_args = {
         'ipywidgets>=7.0.0',
         'pandas',
         'matplotlib',
+        'Pillow',
         'flutil',
     ],
     'packages': find_packages(),
