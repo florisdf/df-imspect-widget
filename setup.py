@@ -144,6 +144,7 @@ setup_args = {
         'matplotlib',
         'Pillow',
         'scikit-video',
+        'tqdm',
         'flutil',
     ],
     'packages': find_packages(),
