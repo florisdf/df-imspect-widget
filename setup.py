@@ -141,6 +141,7 @@ setup_args = {
     'install_requires': [
         'ipywidgets>=7.0.0',
         'pandas',
+        'matplotlib',
         'flutil',
     ],
     'packages': find_packages(),
