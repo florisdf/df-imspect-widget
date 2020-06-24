@@ -248,7 +248,8 @@ class ImBox(VBox):
         box_dicts = self.df_img.loc[idx, 'box_dict']
         for bd in box_dicts:
             box = bd['box']
-            draw.rectangle(list(box)[:4],
+            draw.rectangle([(box.x_min, box.y_min),
+                            (box.x_max, box.y_max)],
                            fill=bd['style']['fill_color'],
                            outline=bd['style']['stroke_color'],
                            width=bd['style']['stroke_width'])
